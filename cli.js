@@ -1,5 +1,4 @@
 /*global process, require*/
-'use strict';
 require('app-module-path').addPath(__dirname + '/modules');
 var analytics = require('api/analytics'),
 	app = require('./package.json'),
