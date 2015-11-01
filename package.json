@@ -1,0 +1,42 @@
+{
+  "name": "ga-impact-monitor",
+  "version": "1.0.0",
+  "description": "Google Analytics impact monitor",
+  "main": "server.js",
+  "scripts": {
+    "postinstall": "cp scripts/hooks/pre-commit .git/hooks/ && chmod +x .git/hooks/pre-commit",
+    "test": "node ./node_modules/jasmine/bin/jasmine.js",
+    "lint": "node ./node_modules/jshint/bin/jshint --reporter=node_modules/jshint-stylish modules/**/*.js",
+    "check": "npm run test && npm run lint"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fraszczakszymon/ga-impact-monitor"
+  },
+  "keywords": [
+    "analytics",
+    "monitor",
+    "data"
+  ],
+  "author": "fraszczakszymon",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fraszczakszymon/ga-impact-monitor/issues"
+  },
+  "homepage": "https://github.com/fraszczakszymon/ga-impact-monitor",
+  "dependencies": {
+    "app-module-path": "^1.0.4",
+    "googleapis": "^2.1.5",
+    "q": "^1.4.1"
+  },
+  "devDependencies": {
+    "jasmine": "^2.3.2",
+    "jshint": "^2.8.0",
+    "jshint-stylish": "^2.0.1",
+    "mockery": "^1.4.0"
+  },
+  "jshintConfig": {
+    "predef": [ "console" ],
+    "node": true
+  }
+}
