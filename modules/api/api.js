@@ -1,8 +1,8 @@
 /*global module, require*/
 var q = require('q'),
 	JWT = require('googleapis').auth.JWT,
+	logger = require('utils/logger'),
 	credentials = require('../../config/credentials.json'),
-	auth,
 	authClient = new JWT(
 		credentials.accountEmail,
 		credentials.accountKey,
@@ -10,20 +10,16 @@ var q = require('q'),
 		[ 'https://www.googleapis.com/auth/analytics.readonly' ]
 	);
 
-function authenticate (forceLogin) {
+function authenticate () {
 	var deferred = q.defer();
-	if (auth && !forceLogin) {
-		deferred.resolve(auth);
-	} else {
-		authClient.authorize(function(err) {
-			if (err) {
-				deferred.reject(err);
-			} else {
-				auth = authClient;
-				deferred.resolve(auth);
-			}
-		});
-	}
+	authClient.authorize(function(err) {
+		if (err) {
+			logger.error('Authentication failure.');
+			deferred.reject(err);
+		} else {
+			deferred.resolve(authClient);
+		}
+	});
 
 	return deferred.promise;
 }

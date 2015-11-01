@@ -32,7 +32,7 @@ describe('API test cases:', function() {
 		spyOn(deferred, 'reject');
 
 		authorizeSuccess = false;
-		api.authenticate(true);
+		api.authenticate();
 		expect(deferred.reject).toHaveBeenCalled();
 	});
 });

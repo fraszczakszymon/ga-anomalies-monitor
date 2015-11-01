@@ -19,6 +19,11 @@ global['q'] = {
 	}
 };
 
+mockery.registerMock('utils/logger', {
+	info: noop,
+	error: noop
+});
+
 beforeEach(function () {
 	mockery.enable({
 		warnOnReplace: false,
