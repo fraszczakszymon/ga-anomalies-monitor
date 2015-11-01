@@ -24,7 +24,9 @@ function getProfiles() {
 				'webPropertyId': '~all'
 			}, function (err, result) {
 				if (err) {
-					logger.error('getProfiles', 'Could not fetch available profiles.');
+					logger.error('getProfiles', {
+						error: err
+					});
 					deferred.reject(err);
 				} else {
 					logger.info('getProfiles', {
@@ -64,7 +66,8 @@ function runQuery(viewIds, metrics, dimensions, filters, extra) {
 					logger.error('runQuery', {
 						metrics: metrics,
 						dimensions: dimensions,
-						filters: filters
+						filters: filters,
+						error: err
 					});
 					deferred.reject(err);
 				} else {

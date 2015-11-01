@@ -14,7 +14,7 @@ function authenticate () {
 	var deferred = q.defer();
 	authClient.authorize(function(err) {
 		if (err) {
-			logger.error('Authentication failure.');
+			logger.error('authenticate');
 			deferred.reject(err);
 		} else {
 			deferred.resolve(authClient);

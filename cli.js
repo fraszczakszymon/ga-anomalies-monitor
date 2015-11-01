@@ -1,27 +1,37 @@
-/*global require*/
+/*global process, require*/
 'use strict';
 require('app-module-path').addPath(__dirname + '/modules');
 var analytics = require('api/analytics'),
-	config = require('./config/config.json');
+	app = require('./package.json'),
+	config = require('./config/config.json'),
+	program = require('commander');
 
-analytics.getProfiles()
-	.done(function (result) {
-		result.items.forEach(function (item) {
-			console.log(item.id, "\t", item.name);
+program.version(app.version);
+
+program
+	.command('profiles')
+	.description('Get all available GA profiles')
+	.action(function () {
+		analytics
+			.getProfiles()
+			.done(function (result) {
+				result.items.forEach(function (item) {
+					console.log(item.id, "\t", item.name);
+				});
+			});
+	});
+
+program
+	.command('queries')
+	.description('Test configured queries')
+	.action(function () {
+		config.queries.forEach(function (query) {
+			analytics.runQuery(query.viewIds, query.metrics, query.dimensions, query.filters);
 		});
 	});
 
-config.queries.forEach(function (query) {
-	analytics.runQuery(query.viewIds, query.metrics, query.dimensions, query.filters)
-		.then(function (result) {
-			//console.log(result);
-		}, function (err) {
-			//console.log(err);
-		});
-	analytics.getPageViews(query.viewIds)
-		.then(function (result) {
-			//console.log(result);
-		}, function (err) {
-			//console.log(err);
-		});
-});
+program.parse(process.argv);
+
+if (!process.argv.slice(2).length) {
+	program.help();
+}
