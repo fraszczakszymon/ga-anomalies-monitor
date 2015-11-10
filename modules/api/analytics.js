@@ -43,6 +43,7 @@ function getProfiles() {
 function runQuery(viewIds, metrics, dimensions, filters, extra) {
 	var deferred = q.defer();
 	dimensions = dimensions || [];
+	dimensions = JSON.parse(JSON.stringify(dimensions)); // make a copy
 	dimensions.push('date');
 	dimensions.push('hour');
 	extra = extra || {};
@@ -50,12 +51,12 @@ function runQuery(viewIds, metrics, dimensions, filters, extra) {
 		.then(function (authClient) {
 			var params = {
 				'auth': authClient,
-				'ids': prepareQueryParam(viewIds),
+				'ids': 'ga:' + viewIds,
 				'metrics': prepareQueryParam(metrics),
 				'dimensions': prepareQueryParam(dimensions),
 				'startIndex': extra.startIndex || 1,
 				'max-results': extra.maxResults || 10000,
-				'start-date': extra.start || '7daysAgo',
+				'start-date': extra.start || '14daysAgo',
 				'end-date': extra.end || 'today'
 			};
 			if (filters) {

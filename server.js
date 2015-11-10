@@ -3,13 +3,18 @@ require('app-module-path').addPath(__dirname + '/modules');
 var express = require('express'),
 	app = express(),
 	config = require('./config/config.json'),
-	dataProvider = require('data/dataProvider'),
+	provider = require('data/provider'),
 	logger = require('utils/logger');
 
 app.get('/events', function (req, res) {
-	var data = dataProvider.get();
+	provider
+		.get()
+		.then(function (data) {
+			res.json(data);
+		}, function (error) {
+			res.status(error.code).json(error);
+		});
 
-	res.json(data);
 });
 
 app.listen(config.server.port, function () {
