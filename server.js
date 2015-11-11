@@ -6,6 +6,11 @@ var express = require('express'),
 	provider = require('data/provider'),
 	logger = require('utils/logger');
 
+app.get('/', function (req, res) {
+	res.sendfile('./front/index.html');
+
+});
+app.use('/public', express.static('./front/public'));
 app.get('/events', function (req, res) {
 	provider
 		.get()

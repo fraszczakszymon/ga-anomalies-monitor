@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>GA Impact Monitor</title>
+		<style>
+			.pageviews-chart {
+				width: 94%;
+				height: 120px;
+				margin: 3% 3%;
+			}
+			#tooltip {
+				background-color: #fff;
+				border: 1px solid #999;
+				border-radius: 3px;
+				display: none;
+				opacity: 0.9;
+				padding: 0.5em;
+				position: absolute;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="pageviews-chart"></div>
+		<div id="tooltip"></div>
+		<script type="text/javascript" src="public/js/jquery.min.js"></script>
+		<script type="text/javascript" src="public/js/jquery.dateformat.min.js"></script>
+		<script type="text/javascript" src="public/js/jquery.flot.min.js"></script>
+		<script type="text/javascript" src="public/js/jquery.flot.time.min.js"></script>
+		<script type="text/javascript" src="public/js/jquery.flot.selection.min.js"></script>
+		<script type="text/javascript" src="public/js/jquery.flot.symbol.min.js"></script>
+		<script type="text/javascript">
+			$.get('/events', function (data) {
+				var date,
+					errorData = [],
+					expectedData = [],
+					markerPosition = 0,
+					maxValue = 0,
+					pageviewsChart = $('.pageviews-chart'),
+					plot,
+					realData = [];
+
+
+				data.pageviews.data.real.forEach(function (row) {
+					date = new Date(row.date);
+					realData.push([ date.getTime(), row.value ]);
+					if (row.value > maxValue) {
+						maxValue = row.value;
+					}
+				});
+				markerPosition = maxValue / -5;
+				data.pageviews.data.expected.forEach(function (row) {
+					date = new Date(row.date);
+					expectedData.push([ date.getTime(), row.value ]);
+					if (row.exceeded) {
+						errorData.push([ date.getTime(), markerPosition ]);
+					}
+				});
+
+				plot = pageviewsChart.plot([
+					{
+						color: '#9E9E9E',
+						data: expectedData,
+						label: 'Predictions',
+						lines: {
+							lineWidth: 1,
+							show: true
+						},
+						shadowSize: 0
+					},
+					{
+						color: '#2196F3',
+						data: realData,
+						label: 'Pageviews',
+						lines: {
+							fill: 0.2,
+							lineWidth: 2,
+							show: true
+						},
+						shadowSize: 0
+					},
+					{
+						color: '#F44336',
+						data: errorData,
+						lines: {
+							show: false
+						},
+						points: {
+							radius: 3.5,
+							show: true,
+							symbol: 'cross'
+						},
+						shadowSize: 0
+					}
+				], {
+					xaxis: {
+						font: {
+							size: 11,
+							family: 'sans-serif',
+							color: '#545454'
+						},
+						mode: 'time',
+						position: 'top',
+						ticks: 7,
+						timezone: 'browser'
+					},
+					yaxis: {
+						min: markerPosition*2,
+						show: false
+					},
+					selection: {
+						mode: 'x'
+					},
+					grid: {
+						hoverable: true,
+						borderWidth: 0
+					},
+					legend: {
+						show: false
+					}
+				}).data("plot");
+
+				pageviewsChart.on('plotselected', function (event, ranges) {
+					$.each(plot.getXAxes(), function(_, axis) {
+						var opts = axis.options;
+						opts.min = ranges.xaxis.from;
+						opts.max = ranges.xaxis.to;
+					});
+					plot.setupGrid();
+					plot.draw();
+					plot.clearSelection();
+				});
+				pageviewsChart.dblclick(function () {
+					$.each(plot.getXAxes(), function(_, axis) {
+						var opts = axis.options;
+						opts.min = realData[0][0];
+						opts.max = realData[realData.length - 1][0];
+					});
+					plot.setupGrid();
+					plot.draw();
+					plot.clearSelection();
+				});
+				pageviewsChart.on('plothover', function (event, pos, item) {
+					if (item && item.series.label) {
+						var x = $.format.date(item.datapoint[0], "MM/dd HH:mm"),
+							y = item.datapoint[1];
+
+						$("#tooltip").html(item.series.label + ': ' + Math.round(y) + ' @ ' + x)
+								.css({top: item.pageY+5, left: item.pageX+5})
+								.fadeIn(200);
+					} else {
+						$("#tooltip").hide();
+					}
+				});
+			});
+		</script>
+	</body>
+</html>

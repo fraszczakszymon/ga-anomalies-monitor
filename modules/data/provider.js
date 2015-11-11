@@ -5,19 +5,25 @@ var analytics = require('api/analytics'),
 
 function parseDate(row, metricsCount) {
 	var margin = metricsCount + 1,
-		date = /(\d{4})(\d{2})(\d{2})(\d{2})/.exec(row[row.length - margin - 1] + row[row.length - margin]);
+		el = /(\d{4})(\d{2})(\d{2})(\d{2})/.exec(row[row.length - margin - 1] + row[row.length - margin]),
+		date = new Date(el[1], el[2]-1, el[3], el[4], 0, 0, 0);
 
-	return new Date(date[1], date[2]-1, date[3], date[4], 0, 0, 0);
+	return date + '';
 }
 
 function filterRows(rows) {
-	var newRows = [],
-		valuePosition = rows[0].length - 1;
+	var i,
+		newRows = [],
+		valuePosition = rows[0].length - 1,
+		valuesToSkip = 1;
 
-	for (var i = 0; i < rows.length; i++) {
-		if (rows[i+1] && rows[i+1][valuePosition] !== '0') {
-			newRows.push(rows[i]);
+	for (i = rows.length-1; i >= 0; i--, valuesToSkip++) {
+		if (rows[i][valuePosition] !== '0') {
+			break;
 		}
+	}
+	for (i = 0; i < rows.length - valuesToSkip; i++) {
+		newRows.push(rows[i]);
 	}
 
 	return newRows;
@@ -43,9 +49,9 @@ function predictData(collection, threshold) {
 		collection.data.expected.push({
 			date: collection.data.real[i].date,
 			value: Math.round(value),
-			error: (current.value - value) / current.value * 100
+			error: (value - current.value) / current.value * 100
 		});
-		if (collection.data.expected[i].error >= threshold) {
+		if (Math.abs(collection.data.expected[i].error) >= threshold) {
 			collection.data.expected[i].exceeded = true;
 		}
 	}
