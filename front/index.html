@@ -6,16 +6,19 @@
 		<style>
 			.pageviews-chart {
 				width: 94%;
-				height: 120px;
+				height: 150px;
 				margin: 3% 3%;
 			}
 			#tooltip {
-				background-color: #fff;
-				border: 1px solid #999;
-				border-radius: 3px;
+				background-color: #000;
+				border-radius: 2px;
+				color: #eee;
 				display: none;
-				opacity: 0.9;
-				padding: 0.5em;
+				font-family: sans-serif;
+				font-size: 0.8em;
+				font-weight: 400;
+				opacity: 0.8;
+				padding: 0.6em 0.8em;
 				position: absolute;
 			}
 		</style>
@@ -26,14 +29,19 @@
 		<script type="text/javascript" src="public/js/jquery.min.js"></script>
 		<script type="text/javascript" src="public/js/jquery.dateformat.min.js"></script>
 		<script type="text/javascript" src="public/js/jquery.flot.min.js"></script>
-		<script type="text/javascript" src="public/js/jquery.flot.time.min.js"></script>
+		<script type="text/javascript" src="public/js/jquery.flot.fillbetween.min.js"></script>
 		<script type="text/javascript" src="public/js/jquery.flot.selection.min.js"></script>
 		<script type="text/javascript" src="public/js/jquery.flot.symbol.min.js"></script>
+		<script type="text/javascript" src="public/js/jquery.flot.time.min.js"></script>
 		<script type="text/javascript">
 			$.get('/events', function (data) {
 				var date,
 					errorData = [],
-					forecastData = [],
+					forecastData = {
+						min: [],
+						forecast: [],
+						max: []
+					},
 					markerPosition = 0,
 					maxValue = 0,
 					pageviewsChart = $('.pageviews-chart'),
@@ -51,7 +59,9 @@
 				markerPosition = maxValue / -5;
 				data.pageviews.data.forecast.forEach(function (row) {
 					date = new Date(row.date);
-					forecastData.push([ date.getTime(), row.value ]);
+					forecastData.min.push([ date.getTime(), row.value.min ]);
+					forecastData.forecast.push([ date.getTime(), row.value.forecast ]);
+					forecastData.max.push([ date.getTime(), row.value.max ]);
 					if (row.exceeded) {
 						errorData.push([ date.getTime(), markerPosition ]);
 					}
@@ -59,11 +69,34 @@
 
 				plot = pageviewsChart.plot([
 					{
-						color: '#9E9E9E',
-						data: forecastData,
-						label: 'Predictions',
+						id: 'minForecast',
+						color: '#CFD8DC',
+						data: forecastData.min,
 						lines: {
-							lineWidth: 1,
+							fill: false,
+							lineWidth: 0,
+							show: true
+						},
+						shadowSize: 0
+					},
+					{
+						id: 'maxForecast',
+						color: '#CFD8DC',
+						data: forecastData.max,
+						fillBetween: 'minForecast',
+						lines: {
+							fill: 0.35,
+							lineWidth: 0,
+							show: true
+						},
+						shadowSize: 0
+					},
+					{
+						color: '#CFD8DC',
+						data: forecastData.forecast,
+						label: 'Forecast',
+						lines: {
+							lineWidth: 1.5,
 							show: true
 						},
 						shadowSize: 0
@@ -71,11 +104,23 @@
 					{
 						color: '#2196F3',
 						data: realData,
-						label: 'Pageviews',
+						label: 'Value',
 						lines: {
-							fill: 0.2,
 							lineWidth: 2,
 							show: true
+						},
+						shadowSize: 0
+					},
+					{
+						color: '#F44336',
+						data: errorData,
+						lines: {
+							show: false
+						},
+						points: {
+							radius: 3.5,
+							show: true,
+							symbol: 'cross'
 						},
 						shadowSize: 0
 					},
@@ -141,15 +186,21 @@
 					plot.clearSelection();
 				});
 				pageviewsChart.on('plothover', function (event, pos, item) {
+					var x, y, label,
+						tooltip = $('#tooltip');
 					if (item && item.series.label) {
-						var x = $.format.date(item.datapoint[0], "MM/dd HH:mm"),
-							y = item.datapoint[1];
+						x = $.format.date(item.datapoint[0], "MM/dd HH:mm");
+						y = item.datapoint[1];
+						label = item.series.label + ': ' + Math.round(y) + '<br /><small>Time: ' + x + '</small>';
 
-						$("#tooltip").html(item.series.label + ': ' + Math.round(y) + ' @ ' + x)
-								.css({top: item.pageY+5, left: item.pageX+5})
-								.fadeIn(200);
+						tooltip.html(label)
+							.css({
+								top: item.pageY+20,
+								left: item.pageX - tooltip.width()/2
+							})
+							.fadeIn(200);
 					} else {
-						$("#tooltip").hide();
+						tooltip.hide();
 					}
 				});
 			});
