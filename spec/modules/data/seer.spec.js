@@ -21,7 +21,7 @@ describe('Seer test cases:', function() {
 		var seer = require('data/seer'),
 			expectedForecast = [ 17, 21, 25, 27, 30, 29 ];
 
-		seer.predict(collection, 20, 0.8, 0.2);
+		seer.predict(collection);
 
 		for (var i = 0; i < 6; i++) {
 			expect(collection.data.forecast[i].value).toEqual(expectedForecast[i]);
@@ -41,7 +41,7 @@ describe('Seer test cases:', function() {
 	it('Mark forecast when real value exceeds over given threshold', function() {
 		var seer = require('data/seer');
 
-		seer.predict(collection, 10, 0.8, 0.2);
+		seer.predict(collection, 10);
 
 		expect(collection.data.forecast[4].exceeded).toBeTruthy();
 	});

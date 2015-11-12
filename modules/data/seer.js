@@ -1,6 +1,7 @@
 /*global module*/
 var alpha = 0.95,
-	beta = 0.13;
+	beta = 0.13,
+	threshold = 20;
 
 function getLevel(value, previousLevel, previousTrend) {
 	return alpha * value + (1-alpha) * (previousLevel + previousTrend);
@@ -10,13 +11,12 @@ function getTrend(level, previousLevel, previousTrend) {
 	return beta * (level - previousLevel) + (1-beta) * previousTrend;
 }
 
-function predict(collection, threshold, alpha, beta) {
+function predict(collection, customThreshold) {
 	var current,
 		forecast,
 		trends,
 		levels;
 
-	threshold = threshold || 20;
 	levels = [ collection.data.real[0].value ];
 	trends = [ collection.data.real[1].value - collection.data.real[0].value ];
 	collection.data.forecast = [ collection.data.real[0] ];
@@ -30,7 +30,7 @@ function predict(collection, threshold, alpha, beta) {
 			value: Math.round(forecast),
 			error: (forecast - current.value) / current.value * 100
 		});
-		if (Math.abs(collection.data.forecast[i].error) >= threshold) {
+		if (Math.abs(collection.data.forecast[i].error) >= (customThreshold || threshold)) {
 			collection.data.forecast[i].exceeded = true;
 		}
 	}
