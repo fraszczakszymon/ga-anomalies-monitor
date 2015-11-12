@@ -2,6 +2,7 @@
 var analytics = require('api/analytics'),
 	config = require('../../config/config.json'),
 	seer = require('data/seer'),
+	strainer = require('data/strainer'),
 	q = require('q');
 
 function parseDate(row, metricsCount) {
@@ -10,24 +11,6 @@ function parseDate(row, metricsCount) {
 		date = new Date(el[1], el[2]-1, el[3], el[4], 0, 0, 0);
 
 	return date + '';
-}
-
-function filterRows(rows) {
-	var i,
-		newRows = [],
-		valuePosition = rows[0].length - 1,
-		valuesToSkip = 1;
-
-	for (i = rows.length-1; i >= 0; i--, valuesToSkip++) {
-		if (rows[i][valuePosition] !== '0') {
-			break;
-		}
-	}
-	for (i = 0; i < rows.length - valuesToSkip; i++) {
-		newRows.push(rows[i]);
-	}
-
-	return newRows;
 }
 
 function parseData(originalData) {
@@ -47,7 +30,7 @@ function parseData(originalData) {
 		real: [],
 		forecast: []
 	};
-	filterRows(originalData.rows).forEach(function (row) {
+	strainer.filter(originalData.rows).forEach(function (row) {
 		collection.data.real.push({
 			date: parseDate(row, metricsCount),
 			value: parseInt(row[row.length - 1], 10)
