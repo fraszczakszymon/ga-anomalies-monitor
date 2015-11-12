@@ -33,7 +33,7 @@
 			$.get('/events', function (data) {
 				var date,
 					errorData = [],
-					expectedData = [],
+					forecastData = [],
 					markerPosition = 0,
 					maxValue = 0,
 					pageviewsChart = $('.pageviews-chart'),
@@ -49,9 +49,9 @@
 					}
 				});
 				markerPosition = maxValue / -5;
-				data.pageviews.data.expected.forEach(function (row) {
+				data.pageviews.data.forecast.forEach(function (row) {
 					date = new Date(row.date);
-					expectedData.push([ date.getTime(), row.value ]);
+					forecastData.push([ date.getTime(), row.value ]);
 					if (row.exceeded) {
 						errorData.push([ date.getTime(), markerPosition ]);
 					}
@@ -60,7 +60,7 @@
 				plot = pageviewsChart.plot([
 					{
 						color: '#9E9E9E',
-						data: expectedData,
+						data: forecastData,
 						label: 'Predictions',
 						lines: {
 							lineWidth: 1,
