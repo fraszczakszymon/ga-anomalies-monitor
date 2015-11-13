@@ -28,7 +28,7 @@ describe('Seer test cases:', function() {
 		}
 	});
 
-	it('Calculate forecast', function() {
+	it('Calculate error', function() {
 		var seer = require('data/seer');
 
 		seer.predict(collection);
@@ -41,7 +41,7 @@ describe('Seer test cases:', function() {
 	it('Mark forecast when real value exceeds over given threshold', function() {
 		var seer = require('data/seer');
 
-		seer.predict(collection);
+		seer.predict(collection, 0.15);
 
 		expect(collection.data.forecast[4].exceeded).toBeTruthy();
 	});

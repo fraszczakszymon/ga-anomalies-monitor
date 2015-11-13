@@ -35,7 +35,7 @@ describe('Seer test cases:', function() {
 		spyOn(mocks.seer, 'predict');
 		spyOn(mocks.strainer, 'filter').and.returnValue([]);
 
-		parser.parse(data);
+		parser.parse(data, {});
 
 		expect(mocks.seer.predict).toHaveBeenCalled();
 		expect(mocks.strainer.filter).toHaveBeenCalled();
@@ -47,7 +47,7 @@ describe('Seer test cases:', function() {
 		spyOn(mocks.seer, 'predict');
 		spyOn(mocks.strainer, 'filter').and.returnValue(data.rows);
 
-		result = parser.parse(data);
+		result = parser.parse(data, {});
 
 		expect(result.data.real[0].date.toISOString()).toEqual('2015-11-05T17:00:00.000Z');
 	});

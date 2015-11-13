@@ -9,7 +9,7 @@ function parseDate(row, metricsCount) {
 	return new Date(date[1], date[2]-1, date[3], date[4], 0, 0, 0);
 }
 
-function parse(originalData) {
+function parse(originalData, queryDetails) {
 	var collection = {
 			id: originalData.query.ids
 		},
@@ -22,6 +22,7 @@ function parse(originalData) {
 	if (name !== '') {
 		collection.name = name.trim();
 	}
+	collection.title = queryDetails.title;
 	collection.data = {
 		real: [],
 		forecast: []
@@ -32,7 +33,7 @@ function parse(originalData) {
 			value: parseInt(row[row.length - 1], 10)
 		});
 	});
-	seer.predict(collection);
+	seer.predict(collection, queryDetails.threshold);
 
 	return collection;
 }

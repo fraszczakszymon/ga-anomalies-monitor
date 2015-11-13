@@ -46,10 +46,11 @@
 					maxValue = 0,
 					pageviewsChart = $('.pageviews-chart'),
 					plot,
-					realData = [];
+					realData = [],
+					queryId = 0;
 
 
-				data.pageviews.data.real.forEach(function (row) {
+				data.queries[queryId].data.real.forEach(function (row) {
 					date = new Date(row.date);
 					realData.push([ date.getTime(), row.value ]);
 					if (row.value > maxValue) {
@@ -57,7 +58,7 @@
 					}
 				});
 				markerPosition = maxValue / -5;
-				data.pageviews.data.forecast.forEach(function (row) {
+				data.queries[queryId].data.forecast.forEach(function (row) {
 					date = new Date(row.date);
 					forecastData.min.push([ date.getTime(), row.value.min ]);
 					forecastData.forecast.push([ date.getTime(), row.value.forecast ]);

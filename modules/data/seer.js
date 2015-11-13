@@ -1,7 +1,22 @@
 /*global module*/
 var alpha = 0.95,
 	beta = 0.13,
-	threshold = 0.2;
+	threshold = 0.4;
+
+function getMedian(data) {
+	var values = [],
+		half;
+	data.forEach(function (row) {
+		values.push(row.value);
+	});
+	values.sort(function (a,b) { return a - b; });
+	half = Math.floor(values.length/2);
+
+	if(values.length % 2)
+		return values[half];
+	else
+		return (values[half-1] + values[half]) / 2.0;
+}
 
 function getMean(data) {
 	var sum = 0;
@@ -27,7 +42,7 @@ function predict(collection, customThreshold) {
 		levels,
 		trends;
 
-	collectionThreshold = getMean(collection.data.real) * (customThreshold || threshold);
+	collectionThreshold = getMedian(collection.data.real) * (customThreshold || threshold);
 	levels = [ collection.data.real[0].value ];
 	trends = [ collection.data.real[1].value - collection.data.real[0].value ];
 	collection.data.forecast = [];

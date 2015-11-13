@@ -86,12 +86,7 @@ function runQuery(viewIds, metrics, dimensions, filters, extra) {
 	return deferred.promise;
 }
 
-function getPageViews(viewIds) {
-	return runQuery(viewIds, [ 'pageviews' ]);
-}
-
 module.exports = {
-	getPageViews: getPageViews,
 	getProfiles: getProfiles,
 	runQuery: runQuery
 };
