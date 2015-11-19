@@ -33,7 +33,7 @@ function parse(originalData, queryDetails) {
 			value: parseInt(row[row.length - 1], 10)
 		});
 	});
-	seer.predict(collection, queryDetails.threshold);
+	collection.errors = seer.predict(collection, queryDetails);
 
 	return collection;
 }

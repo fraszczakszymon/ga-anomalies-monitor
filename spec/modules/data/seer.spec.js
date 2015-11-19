@@ -1,6 +1,9 @@
 /*global beforeEach, describe, expect, it, require*/
 describe('Seer test cases:', function() {
-	var collection;
+	var collection,
+		mocks = {
+			query: {}
+		};
 
 	beforeEach(function () {
 		var data = [ 17, 21, 23, 26, 23, 29 ];
@@ -15,13 +18,18 @@ describe('Seer test cases:', function() {
 				value: value
 			});
 		});
+		mocks.query = {
+			alpha: 0.95,
+			beta: 0.13,
+			threshold: 0.4
+		}
 	});
 
 	it('Calculate forecast', function() {
 		var seer = require('data/seer'),
 			expectedForecast = [ 17, 21, 25, 27, 30, 26 ];
 
-		seer.predict(collection);
+		seer.predict(collection, mocks.query);
 
 		for (var i = 0; i < 6; i++) {
 			expect(collection.data.forecast[i].value.forecast).toEqual(expectedForecast[i]);
@@ -31,7 +39,7 @@ describe('Seer test cases:', function() {
 	it('Calculate error', function() {
 		var seer = require('data/seer');
 
-		seer.predict(collection);
+		seer.predict(collection, mocks.query);
 
 		for (var i = 2; i < 6; i++) {
 			expect(collection.data.forecast[i].error).not.toEqual(0);
@@ -40,8 +48,9 @@ describe('Seer test cases:', function() {
 
 	it('Mark forecast when real value exceeds over given threshold', function() {
 		var seer = require('data/seer');
+		mocks.query.threshold = 0.15;
 
-		seer.predict(collection, 0.15);
+		seer.predict(collection, mocks.query);
 
 		expect(collection.data.forecast[4].exceeded).toBeTruthy();
 	});

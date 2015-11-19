@@ -4,28 +4,32 @@ var analytics = require('api/analytics'),
 	parser = require('data/parser'),
 	q = require('q');
 
-function get() {
+function fetch(queries, extra) {
 	var promises = [];
-	config.queries.forEach(function (query) {
-		promises.push(analytics.runQuery(query.viewIds, query.metrics, query.dimensions, query.filters));
+	queries.forEach(function (query) {
+		promises.push(analytics.runQuery(query.viewIds, query.metrics, query.dimensions, query.filters, extra));
 	});
 
-	return q.all(promises)
-		.then(function (data) {
-			var queriesData = [],
-				queryId = 0;
+	return q.all(promises);
+}
 
-			data.forEach(function (queryData) {
-				queriesData.push(parser.parse(queryData, config.queries[queryId]));
-				queryId++;
-			});
+function get() {
+	return fetch(config.queries).then(function (data) {
+		var queriesData = [],
+			queryId = 0;
 
-			return {
-				queries: queriesData
-			};
+		data.forEach(function (queryData) {
+			queriesData.push(parser.parse(queryData, config.queries[queryId]));
+			queryId++;
 		});
+
+		return {
+			queries: queriesData
+		};
+	});
 }
 
 module.exports = {
+	fetch: fetch,
 	get: get
 };

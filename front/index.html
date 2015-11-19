@@ -3,28 +3,11 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>GA Impact Monitor</title>
-		<style>
-			.pageviews-chart {
-				width: 94%;
-				height: 150px;
-				margin: 3% 3%;
-			}
-			#tooltip {
-				background-color: #000;
-				border-radius: 2px;
-				color: #eee;
-				display: none;
-				font-family: sans-serif;
-				font-size: 0.8em;
-				font-weight: 400;
-				opacity: 0.8;
-				padding: 0.6em 0.8em;
-				position: absolute;
-			}
-		</style>
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+		<link rel="stylesheet" type="text/css" href="public/css/gaam.css" />
 	</head>
 	<body>
-		<div class="pageviews-chart"></div>
+		<div class="chart"></div>
 		<div id="tooltip"></div>
 		<script type="text/javascript" src="public/js/jquery.min.js"></script>
 		<script type="text/javascript" src="public/js/jquery.dateformat.min.js"></script>
@@ -44,10 +27,10 @@
 					},
 					markerPosition = 0,
 					maxValue = 0,
-					pageviewsChart = $('.pageviews-chart'),
+					pageviewsChart = $('.chart'),
 					plot,
 					realData = [],
-					queryId = 0;
+					queryId = window.location.hash.replace('#', '') || 0;
 
 
 				data.queries[queryId].data.real.forEach(function (row) {

@@ -1,7 +1,4 @@
 /*global module*/
-var alpha = 0.95,
-	beta = 0.13,
-	threshold = 0.4;
 
 function getMedian(data) {
 	var values = [],
@@ -27,22 +24,23 @@ function getMean(data) {
 	return sum/data.length;
 }
 
-function getLevel(value, previousLevel, previousTrend) {
+function getLevel(alpha, value, previousLevel, previousTrend) {
 	return alpha * value + (1-alpha) * (previousLevel + previousTrend);
 }
 
-function getTrend(level, previousLevel, previousTrend) {
+function getTrend(beta, level, previousLevel, previousTrend) {
 	return beta * (level - previousLevel) + (1-beta) * previousTrend;
 }
 
-function predict(collection, customThreshold) {
+function predict(collection, query) {
 	var collectionThreshold,
 		current,
+		errors = 0,
 		forecast,
 		levels,
 		trends;
 
-	collectionThreshold = getMedian(collection.data.real) * (customThreshold || threshold);
+	collectionThreshold = getMedian(collection.data.real) * query.threshold;
 	levels = [ collection.data.real[0].value ];
 	trends = [ collection.data.real[1].value - collection.data.real[0].value ];
 	collection.data.forecast = [];
@@ -57,8 +55,8 @@ function predict(collection, customThreshold) {
 	});
 	for (var i = 1; i < collection.data.real.length; i++) {
 		current = collection.data.real[i];
-		levels.push(getLevel(current.value, levels[i-1], trends[i-1]));
-		trends.push(getTrend(levels[i], levels[i-1], trends[i-1]));
+		levels.push(getLevel(query.alpha, current.value, levels[i-1], trends[i-1]));
+		trends.push(getTrend(query.beta, levels[i], levels[i-1], trends[i-1]));
 		forecast = levels[i-1] + trends[i-1];
 		collection.data.forecast.push({
 			date: collection.data.real[i].date,
@@ -71,8 +69,11 @@ function predict(collection, customThreshold) {
 		});
 		if (Math.abs(collection.data.forecast[i].error) >= collectionThreshold) {
 			collection.data.forecast[i].exceeded = true;
+			errors++;
 		}
 	}
+
+	return errors;
 }
 
 module.exports = {
