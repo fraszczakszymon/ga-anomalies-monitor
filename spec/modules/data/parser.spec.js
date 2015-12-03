@@ -1,7 +1,10 @@
 /*global beforeEach, describe, expect, it, require*/
-describe('Seer test cases:', function() {
+describe('Parser test cases:', function() {
 	var data,
 		mocks = {
+			profiles: {
+				get: noop
+			},
 			seer: {
 				predict: noop
 			},
@@ -11,6 +14,7 @@ describe('Seer test cases:', function() {
 		};
 
 	beforeEach(function () {
+		mockery.registerMock('api/profiles', mocks.profiles);
 		mockery.registerMock('data/seer', mocks.seer);
 		mockery.registerMock('data/strainer', mocks.strainer);
 
@@ -26,6 +30,7 @@ describe('Seer test cases:', function() {
 	});
 
 	afterEach(function () {
+		mockery.deregisterMock('api/profiles');
 		mockery.deregisterMock('data/seer');
 		mockery.deregisterMock('data/strainer');
 	});
@@ -49,6 +54,6 @@ describe('Seer test cases:', function() {
 
 		result = parser.parse(data, {});
 
-		expect(result.data.real[0].date.toISOString()).toEqual('2015-11-05T17:00:00.000Z');
+		expect(result.data.real[0].date.toISOString()).toEqual('2015-11-05T09:00:00.000Z');
 	});
 });

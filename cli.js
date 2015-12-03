@@ -16,7 +16,7 @@ program
 			.getProfiles()
 			.done(function (result) {
 				result.items.forEach(function (item) {
-					console.log(item.id, "\t", item.name);
+					console.log("id:", item.id, "• timezone:", item.timezone, "• name:", item.name);
 				});
 			});
 	});

@@ -2,6 +2,7 @@
 var analytics = require('api/analytics'),
 	config = require('../../config/config.json'),
 	parser = require('data/parser'),
+	profiles = require('api/profiles'),
 	q = require('q');
 
 function fetch(queries, extra) {
@@ -14,19 +15,23 @@ function fetch(queries, extra) {
 }
 
 function get() {
-	return fetch(config.queries).then(function (data) {
-		var queriesData = [],
-			queryId = 0;
+	return profiles.fetch()
+		.then(function () {
+			return fetch(config.queries);
+		})
+		.then(function (data) {
+			var queriesData = [],
+				queryId = 0;
 
-		data.forEach(function (queryData) {
-			queriesData.push(parser.parse(queryData, config.queries[queryId]));
-			queryId++;
+			data.forEach(function (queryData) {
+				queriesData.push(parser.parse(queryData, config.queries[queryId]));
+				queryId++;
+			});
+
+			return {
+				queries: queriesData
+			};
 		});
-
-		return {
-			queries: queriesData
-		};
-	});
 }
 
 module.exports = {
