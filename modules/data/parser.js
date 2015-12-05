@@ -16,31 +16,65 @@ function parseDate(row, metricsCount, timezone) {
 	}, timezone);
 }
 
-function parse(originalData, queryDetails) {
-	var collection = {
-			id: originalData.query.ids
-		},
-		metricsCount = originalData.query.metrics.length,
-		name = '',
-		profile = profiles.get(collection.id) || {};
+function getFirstDate(timezone) {
+	return moment()
+		.tz(timezone)
+		.hour(0)
+		.minute(0)
+		.second(0)
+		.millisecond(0)
+		.add(-14, 'days');
+}
 
-	for (var i = 0; i <= originalData.rows[0].length - 3 - metricsCount; i++) {
-		name += originalData.rows[0][i] + ' ';
-	}
-	if (name !== '') {
-		collection.name = name.trim();
-	}
-	collection.title = queryDetails.title;
-	collection.data = {
-		real: [],
-		forecast: []
+function prepareCollection(originalData, queryDetails) {
+	return {
+		id: originalData.query.ids,
+		title: queryDetails.title,
+		data: {
+			real: [],
+			forecast: []
+		}
 	};
-	strainer.filter(originalData.rows).forEach(function (row) {
+}
+
+function createEmptyRows(timezone, lastDate) {
+	var data = {},
+		date = getFirstDate(timezone);
+	while (lastDate > date) {
+		data[date.format()] = 0;
+		date.add(1, 'hours');
+	}
+
+	return data;
+}
+
+function saveRealData(collection, rows, data, metricsCount, timezone) {
+	var date,
+		value;
+	data.forEach(function (dataRow) {
+		date = parseDate(dataRow, metricsCount, timezone);
+		value = parseInt(dataRow[dataRow.length - 1], 10);
+		rows[date.format()] = value;
+	});
+	Object.keys(rows).forEach(function (date) {
 		collection.data.real.push({
-			date: parseDate(row, metricsCount, profile.timezone),
-			value: parseInt(row[row.length - 1], 10)
+			date: date,
+			value: rows[date]
 		});
 	});
+}
+
+function parse(originalData, queryDetails) {
+	var collection = prepareCollection(originalData, queryDetails),
+		filteredData,
+		metricsCount = originalData.query.metrics.length,
+		profile = profiles.get(originalData.query.ids) || {},
+		rows,
+		timezone = profile.timezone || 'Europe/London';
+
+	filteredData = strainer.filter(originalData.rows);
+	rows = createEmptyRows(timezone, parseDate(filteredData[filteredData.length - 1], metricsCount, timezone));
+	saveRealData(collection, rows, filteredData, metricsCount, timezone);
 	collection.errors = seer.predict(collection, queryDetails);
 
 	return collection;

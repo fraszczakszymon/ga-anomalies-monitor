@@ -38,7 +38,7 @@ describe('Parser test cases:', function() {
 	it('Use seer and strainer to parse data', function() {
 		var parser = require('data/parser');
 		spyOn(mocks.seer, 'predict');
-		spyOn(mocks.strainer, 'filter').and.returnValue([]);
+		spyOn(mocks.strainer, 'filter').and.returnValue(data.rows);
 
 		parser.parse(data, {});
 
@@ -54,6 +54,6 @@ describe('Parser test cases:', function() {
 
 		result = parser.parse(data, {});
 
-		expect(result.data.real[0].date.toISOString()).toEqual('2015-11-05T09:00:00.000Z');
+		expect(result.data.real[0].date).toEqual('2015-11-05T09:00:00+00:00');
 	});
 });

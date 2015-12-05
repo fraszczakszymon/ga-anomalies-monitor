@@ -25,10 +25,10 @@ function calculate(query) {
 				currentData,
 				bestAlpha, bestBeta, lowestVariance, variance;
 
-			for (; alpha >= 0.01; alpha -= 0.01) {
+			for (; alpha >= 0.01; alpha -= 0.025) {
 				query.alpha = alpha;
 				beta = 0.01;
-				for (; beta <= 1; beta += 0.01) {
+				for (; beta <= 1; beta += 0.025) {
 					query.beta = beta;
 					currentData = parser.parse(queryData[0], query);
 					variance = getVariance(currentData.data.forecast);
