@@ -17,37 +17,36 @@
 		<script type="text/javascript" src="public/js/jquery.flot.symbol.min.js"></script>
 		<script type="text/javascript" src="public/js/jquery.flot.time.min.js"></script>
 		<script type="text/javascript">
-			$.get('/events', function (data) {
+			$.get('/queries', function (data) {
 				var date,
 					errorData = [],
-					forecastData = {
-						min: [],
-						forecast: [],
-						max: []
-					},
 					markerPosition = 0,
 					maxValue = 0,
 					pageviewsChart = $('.chart'),
 					plot,
-					realData = [],
+					plotData = {
+						forecast: [],
+						max: [],
+						min: [],
+						real: []
+					},
 					queryId = window.location.hash.replace('#', '') || 0;
 
 
-				data.queries[queryId].data.real.forEach(function (row) {
-					date = new Date(row.date);
-					realData.push([ date.getTime(), row.value ]);
+				data.queries[queryId].data.forEach(function (row) {
 					if (row.value > maxValue) {
 						maxValue = row.value;
 					}
 				});
 				markerPosition = maxValue / -5;
-				data.queries[queryId].data.forecast.forEach(function (row) {
-					date = new Date(row.date);
-					forecastData.min.push([ date.getTime(), row.value.min ]);
-					forecastData.forecast.push([ date.getTime(), row.value.forecast ]);
-					forecastData.max.push([ date.getTime(), row.value.max ]);
+				data.queries[queryId].data.forEach(function (row) {
+					date = (new Date(row.date)).getTime();
+					plotData.forecast.push([ date, row.forecast ]);
+					plotData.max.push([ date, row.max ]);
+					plotData.min.push([ date, row.min ]);
+					plotData.real.push([ date, row.value ]);
 					if (row.exceeded) {
-						errorData.push([ date.getTime(), markerPosition ]);
+						errorData.push([ date, markerPosition ]);
 					}
 				});
 
@@ -55,7 +54,7 @@
 					{
 						id: 'minForecast',
 						color: '#CFD8DC',
-						data: forecastData.min,
+						data: plotData.min,
 						lines: {
 							fill: false,
 							lineWidth: 0,
@@ -66,7 +65,7 @@
 					{
 						id: 'maxForecast',
 						color: '#CFD8DC',
-						data: forecastData.max,
+						data: plotData.max,
 						fillBetween: 'minForecast',
 						lines: {
 							fill: 0.35,
@@ -77,7 +76,7 @@
 					},
 					{
 						color: '#CFD8DC',
-						data: forecastData.forecast,
+						data: plotData.forecast,
 						label: 'Forecast',
 						lines: {
 							lineWidth: 1.5,
@@ -87,7 +86,7 @@
 					},
 					{
 						color: '#2196F3',
-						data: realData,
+						data: plotData.real,
 						label: 'Value',
 						lines: {
 							lineWidth: 2,
@@ -134,7 +133,7 @@
 						timezone: 'browser'
 					},
 					yaxis: {
-						min: markerPosition*2,
+						min: markerPosition*1.2,
 						show: false
 					},
 					selection: {
@@ -162,8 +161,8 @@
 				pageviewsChart.dblclick(function () {
 					$.each(plot.getXAxes(), function(_, axis) {
 						var opts = axis.options;
-						opts.min = realData[0][0];
-						opts.max = realData[realData.length - 1][0];
+						opts.min = plotData.real[0][0];
+						opts.max = plotData.real[plotData.real.length - 1][0];
 					});
 					plot.setupGrid();
 					plot.draw();

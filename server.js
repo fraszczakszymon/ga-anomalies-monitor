@@ -11,7 +11,7 @@ app.get('/', function (req, res) {
 
 });
 app.use('/public', express.static('./front/public'));
-app.get('/events', function (req, res) {
+app.get('/queries', function (req, res) {
 	provider
 		.get()
 		.then(function (data) {

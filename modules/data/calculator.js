@@ -2,19 +2,19 @@
 var parser = require('data/parser'),
 	provider = require('data/provider');
 
-function getVariance(forecast) {
+function getVariance(data) {
 	var mean,
 		sum = 0;
-	forecast.forEach(function (row) {
+	data.forEach(function (row) {
 		sum += row.error;
 	});
-	mean = sum / forecast.length;
+	mean = sum / data.length;
 	sum = 0;
-	forecast.forEach(function (row) {
+	data.forEach(function (row) {
 		sum += Math.pow(row.error - mean, 2);
 	});
 
-	return sum / forecast.length;
+	return sum / data.length;
 }
 
 function calculate(query) {
@@ -31,7 +31,7 @@ function calculate(query) {
 				for (; beta <= 1; beta += 0.025) {
 					query.beta = beta;
 					currentData = parser.parse(queryData[0], query);
-					variance = getVariance(currentData.data.forecast);
+					variance = getVariance(currentData.data);
 					if (!lowestVariance || lowestVariance > variance) {
 						lowestVariance = variance;
 						bestAlpha = alpha;

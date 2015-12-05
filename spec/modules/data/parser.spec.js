@@ -1,4 +1,4 @@
-/*global beforeEach, describe, expect, it, require*/
+/*global afterEach, beforeEach, describe, expect, it, require, spyOn*/
 describe('Parser test cases:', function() {
 	var data,
 		mocks = {
@@ -54,6 +54,6 @@ describe('Parser test cases:', function() {
 
 		result = parser.parse(data, {});
 
-		expect(result.data.real[0].date).toEqual('2015-11-05T09:00:00+00:00');
+		expect(result.data[0].date).toEqual('2015-11-05T09:00:00+00:00');
 	});
 });

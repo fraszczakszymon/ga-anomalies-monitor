@@ -26,17 +26,14 @@ function getTrend(beta, level, previousLevel, previousTrend) {
 	return beta * (level - previousLevel) + (1-beta) * previousTrend;
 }
 
-function getForecastRow(date, threshold, value, forecast) {
+function getForecastRow(threshold, value, forecast) {
 	var max = forecast + threshold,
 		min = Math.max(forecast - threshold, 0),
 		row = {
-			date: date,
-			value: {
-				min: min,
-				forecast: Math.round(forecast),
-				max: max
-			},
-			error: forecast - value
+			error: forecast - value,
+			value: Math.round(forecast),
+			max: max,
+			min: min
 		};
 
 	if (value > max || value < min) {
@@ -44,6 +41,17 @@ function getForecastRow(date, threshold, value, forecast) {
 	}
 
 	return row;
+}
+
+function pushForecastData(collection, index, forecast) {
+	collection.data[index].error = forecast.error;
+	collection.data[index].forecast = forecast.value;
+	collection.data[index].max = forecast.max;
+	collection.data[index].min = forecast.min;
+
+	if (forecast.exceeded) {
+		collection.data[index].exceeded = true;
+	}
 }
 
 function predict(collection, query) {
@@ -55,24 +63,22 @@ function predict(collection, query) {
 		threshold,
 		trends;
 
-	levels = [ collection.data.real[0].value ];
-	trends = [ collection.data.real[1].value - collection.data.real[0].value ];
-	collection.data.forecast = [];
-	threshold = getMedian(collection.data.real) * query.threshold;
+	levels = [ collection.data[0].value ];
+	trends = [ collection.data[1].value - collection.data[0].value ];
+	threshold = getMedian(collection.data) * query.threshold;
 	forecastRow = getForecastRow(
-		collection.data.real[0].date,
 		threshold,
-		collection.data.real[0].value,
-		collection.data.real[0].value
+		collection.data[0].value,
+		collection.data[0].value
 	);
-	collection.data.forecast.push(forecastRow);
-	for (var i = 1; i < collection.data.real.length; i++) {
-		current = collection.data.real[i];
+	pushForecastData(collection, 0, forecastRow);
+	for (var i = 1; i < collection.data.length; i++) {
+		current = collection.data[i];
 		levels.push(getLevel(query.alpha, current.value, levels[i-1], trends[i-1]));
 		trends.push(getTrend(query.beta, levels[i], levels[i-1], trends[i-1]));
 		forecast = levels[i-1] + trends[i-1];
-		forecastRow = getForecastRow(collection.data.real[i].date, threshold, current.value, forecast);
-		collection.data.forecast.push(forecastRow);
+		forecastRow = getForecastRow(threshold, current.value, forecast);
+		pushForecastData(collection, i, forecastRow);
 		if (forecastRow.exceeded) {
 			errors++;
 		}

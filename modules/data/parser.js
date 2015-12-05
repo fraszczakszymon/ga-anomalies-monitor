@@ -30,10 +30,7 @@ function prepareCollection(originalData, queryDetails) {
 	return {
 		id: originalData.query.ids,
 		title: queryDetails.title,
-		data: {
-			real: [],
-			forecast: []
-		}
+		data: []
 	};
 }
 
@@ -48,7 +45,7 @@ function createEmptyRows(timezone, lastDate) {
 	return data;
 }
 
-function saveRealData(collection, rows, data, metricsCount, timezone) {
+function saveData(collection, rows, data, metricsCount, timezone) {
 	var date,
 		value;
 	data.forEach(function (dataRow) {
@@ -57,7 +54,7 @@ function saveRealData(collection, rows, data, metricsCount, timezone) {
 		rows[date.format()] = value;
 	});
 	Object.keys(rows).forEach(function (date) {
-		collection.data.real.push({
+		collection.data.push({
 			date: date,
 			value: rows[date]
 		});
@@ -74,7 +71,7 @@ function parse(originalData, queryDetails) {
 
 	filteredData = strainer.filter(originalData.rows);
 	rows = createEmptyRows(timezone, parseDate(filteredData[filteredData.length - 1], metricsCount, timezone));
-	saveRealData(collection, rows, filteredData, metricsCount, timezone);
+	saveData(collection, rows, filteredData, metricsCount, timezone);
 	collection.errors = seer.predict(collection, queryDetails);
 
 	return collection;

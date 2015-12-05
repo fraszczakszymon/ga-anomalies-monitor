@@ -8,12 +8,10 @@ describe('Seer test cases:', function() {
 	beforeEach(function () {
 		var data = [ 17, 21, 23, 26, 23, 29 ];
 		collection = {
-			data: {
-				real: [ ]
-			}
+			data: []
 		};
 		data.forEach(function (value) {
-			collection.data.real.push({
+			collection.data.push({
 				date: 'foo',
 				value: value
 			});
@@ -32,7 +30,7 @@ describe('Seer test cases:', function() {
 		seer.predict(collection, mocks.query);
 
 		for (var i = 0; i < 6; i++) {
-			expect(collection.data.forecast[i].value.forecast).toEqual(expectedForecast[i]);
+			expect(collection.data[i].forecast).toEqual(expectedForecast[i]);
 		}
 	});
 
@@ -42,7 +40,7 @@ describe('Seer test cases:', function() {
 		seer.predict(collection, mocks.query);
 
 		for (var i = 2; i < 6; i++) {
-			expect(collection.data.forecast[i].error).not.toEqual(0);
+			expect(collection.data[i].error).not.toEqual(0);
 		}
 	});
 
@@ -52,6 +50,6 @@ describe('Seer test cases:', function() {
 
 		seer.predict(collection, mocks.query);
 
-		expect(collection.data.forecast[4].exceeded).toBeTruthy();
+		expect(collection.data[4].exceeded).toBeTruthy();
 	});
 });
