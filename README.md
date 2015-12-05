@@ -1,1 +1,1 @@
-# Google Analytics impact monitor
+# Google Analytics anomalies monitor
