@@ -76,7 +76,7 @@ function predict(collection, query) {
 		current = collection.data[i];
 		levels.push(getLevel(query.alpha, current.value, levels[i-1], trends[i-1]));
 		trends.push(getTrend(query.beta, levels[i], levels[i-1], trends[i-1]));
-		forecast = levels[i-1] + trends[i-1];
+		forecast = Math.max(levels[i-1] + trends[i-1], 0);
 		forecastRow = getForecastRow(threshold, current.value, forecast);
 		pushForecastData(collection, i, forecastRow);
 		if (forecastRow.exceeded) {

@@ -1,5 +1,6 @@
 /*global module, require*/
-var moment = require('moment-timezone'),
+var config = require('../../config/config.json'),
+	moment = require('moment-timezone'),
 	profiles = require('api/profiles'),
 	seer = require('data/seer'),
 	strainer = require('data/strainer');
@@ -23,7 +24,7 @@ function getFirstDate(timezone) {
 		.minute(0)
 		.second(0)
 		.millisecond(0)
-		.add(-14, 'days');
+		.add(-1 * config.settings.timeSpan, 'days');
 }
 
 function prepareCollection(originalData, queryDetails) {

@@ -1,6 +1,7 @@
 /*global module, require*/
 var api = require('api/api'),
 	analytics = require('googleapis').analytics('v3'),
+	config = require('../../config/config.json'),
 	logger = require('utils/logger'),
 	q = require('q');
 
@@ -56,7 +57,7 @@ function runQuery(viewIds, metrics, dimensions, filters, extra) {
 				'dimensions': prepareQueryParam(dimensions),
 				'startIndex': extra.startIndex || 1,
 				'max-results': extra.maxResults || 10000,
-				'start-date': extra.start || '14daysAgo',
+				'start-date': extra.start || config.settings.timeSpan + 'daysAgo',
 				'end-date': extra.end || 'today'
 			};
 			if (filters) {

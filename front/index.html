@@ -38,7 +38,7 @@
 						maxValue = row.value;
 					}
 				});
-				markerPosition = maxValue / -5;
+				markerPosition = maxValue / -10;
 				data.queries[queryId].data.forEach(function (row) {
 					date = (new Date(row.date)).getTime();
 					plotData.forecast.push([ date, row.forecast ]);
