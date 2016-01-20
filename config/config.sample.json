@@ -2,5 +2,8 @@
   "server": {
     "port": 8080
   },
+  "settings": {
+    "timeSpan": 4
+  },
   "queries": []
 }

@@ -7,7 +7,7 @@ var express = require('express'),
 	logger = require('utils/logger');
 
 app.get('/', function (req, res) {
-	res.sendfile('./front/index.html');
+	res.sendFile(__dirname + '/front/index.html');
 
 });
 app.use('/public', express.static('./front/public'));
