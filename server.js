@@ -1,11 +1,13 @@
 /*global require*/
 require('app-module-path').addPath(__dirname + '/modules');
 var express = require('express'),
+	cors = require('cors'),
 	app = express(),
 	config = require('./config/config.json'),
 	provider = require('data/provider'),
 	logger = require('utils/logger');
 
+app.use(cors());
 app.get('/', function (req, res) {
 	res.sendFile(__dirname + '/front/index.html');
 
