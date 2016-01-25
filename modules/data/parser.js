@@ -27,10 +27,11 @@ function getFirstDate(timezone) {
 		.add(-1 * config.settings.timeSpan, 'days');
 }
 
-function prepareCollection(originalData, queryDetails) {
+function prepareCollection(queryDetails) {
 	return {
-		id: originalData.query.ids,
+		id: queryDetails.id,
 		title: queryDetails.title,
+		description: queryDetails.description,
 		data: []
 	};
 }
@@ -63,7 +64,7 @@ function saveData(collection, rows, data, metricsCount, timezone) {
 }
 
 function parse(originalData, queryDetails) {
-	var collection = prepareCollection(originalData, queryDetails),
+	var collection = prepareCollection(queryDetails),
 		filteredData,
 		metricsCount = originalData.query.metrics.length,
 		profile = profiles.get(originalData.query.ids) || {},

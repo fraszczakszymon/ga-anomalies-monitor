@@ -24,8 +24,10 @@ function get() {
 				queryId = 0;
 
 			data.forEach(function (queryData) {
-				queriesData.push(parser.parse(queryData, config.queries[queryId]));
-				queryId++;
+				if (config.queries[queryId].enabled) {
+					queriesData.push(parser.parse(queryData, config.queries[queryId]));
+					queryId++;
+				}
 			});
 
 			return {
