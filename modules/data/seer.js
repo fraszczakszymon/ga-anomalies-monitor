@@ -46,8 +46,8 @@ function getForecastRow(threshold, value, forecast) {
 function pushForecastData(collection, index, forecast) {
 	collection.data[index].error = forecast.error;
 	collection.data[index].forecast = forecast.value;
-	collection.data[index].max = forecast.max;
-	collection.data[index].min = forecast.min;
+	collection.data[index].max = forecast.max || 0;
+	collection.data[index].min = forecast.min || 0;
 
 	if (forecast.exceeded) {
 		collection.data[index].exceeded = true;

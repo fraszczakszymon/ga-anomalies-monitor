@@ -65,14 +65,22 @@ function saveData(collection, rows, data, metricsCount, timezone) {
 
 function parse(originalData, queryDetails) {
 	var collection = prepareCollection(queryDetails),
+		date,
 		filteredData,
 		metricsCount = originalData.query.metrics.length,
 		profile = profiles.get(originalData.query.ids) || {},
 		rows,
 		timezone = profile.timezone || 'Europe/London';
 
-	filteredData = strainer.filter(originalData.rows);
-	rows = createEmptyRows(timezone, parseDate(filteredData[filteredData.length - 1], metricsCount, timezone));
+	if (originalData.rows) {
+		filteredData = strainer.filter(originalData.rows);
+		date = parseDate(filteredData[filteredData.length - 1], metricsCount, timezone);
+	} else {
+		filteredData = [];
+		date = moment()
+			.tz(timezone);
+	}
+	rows = createEmptyRows(timezone, date);
 	saveData(collection, rows, filteredData, metricsCount, timezone);
 	collection.errors = seer.predict(collection, queryDetails);
 

@@ -1,7 +1,6 @@
 /*global module, require*/
 var api = require('api/api'),
 	analytics = require('googleapis').analytics('v3'),
-	config = require('../../config/config.json'),
 	logger = require('utils/logger'),
 	q = require('q');
 
@@ -42,7 +41,8 @@ function getProfiles() {
 }
 
 function runQuery(viewIds, metrics, dimensions, filters, extra) {
-	var deferred = q.defer();
+	var config = require('../../config/config.json'),
+		deferred = q.defer();
 	dimensions = dimensions || [];
 	dimensions = JSON.parse(JSON.stringify(dimensions)); // make a copy
 	dimensions.push('date');
@@ -77,7 +77,7 @@ function runQuery(viewIds, metrics, dimensions, filters, extra) {
 						metrics: metrics,
 						dimensions: dimensions,
 						filters: filters,
-						results: result.rows.length
+						results: result.rows ? result.rows.length : 0
 					});
 					deferred.resolve(result);
 				}
