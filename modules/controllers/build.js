@@ -39,7 +39,7 @@ router.post('/', function (req, res) {
 				.get()
 				.then(function (data) {
 					duration = moment.duration(moment().diff(startTime));
-					builds.update(build.id, data, duration.asMilliseconds(), builds.STATUS.done);
+					builds.update(build.id, data.queries, duration.asMilliseconds(), builds.STATUS.done);
 				}, function () {
 					duration = moment.duration(moment().diff(startTime));
 					builds.update(build.id, '', duration.asMilliseconds(), builds.STATUS.error);
