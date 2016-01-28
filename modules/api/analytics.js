@@ -4,7 +4,7 @@ var api = require('api/api'),
 	logger = require('utils/logger'),
 	q = require('q');
 
-function prepareQueryParam (params) {
+function prepareQueryParam(params) {
 	if (!params) {
 		return;
 	}

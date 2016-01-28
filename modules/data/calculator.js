@@ -40,7 +40,7 @@ function calculate(query) {
 				}
 			}
 
-			return [ bestAlpha, bestBeta ];
+			return [bestAlpha, bestBeta];
 		});
 }
 

@@ -8,22 +8,24 @@ function getMedian(data) {
 			values.push(row.value);
 		}
 	});
-	values.sort(function (a,b) { return a - b; });
-	half = Math.floor(values.length/2);
+	values.sort(function (a, b) {
+		return a - b;
+	});
+	half = Math.floor(values.length / 2);
 
 	if (values.length % 2) {
 		return values[half];
 	}
 
-	return (values[half-1] + values[half]) / 2.0;
+	return (values[half - 1] + values[half]) / 2.0;
 }
 
 function getLevel(alpha, value, previousLevel, previousTrend) {
-	return alpha * value + (1-alpha) * (previousLevel + previousTrend);
+	return alpha * value + (1 - alpha) * (previousLevel + previousTrend);
 }
 
 function getTrend(beta, level, previousLevel, previousTrend) {
-	return beta * (level - previousLevel) + (1-beta) * previousTrend;
+	return beta * (level - previousLevel) + (1 - beta) * previousTrend;
 }
 
 function getForecastRow(threshold, value, forecast) {
@@ -63,8 +65,8 @@ function predict(collection, query) {
 		threshold,
 		trends;
 
-	levels = [ collection.data[0].value ];
-	trends = [ collection.data[1].value - collection.data[0].value ];
+	levels = [collection.data[0].value];
+	trends = [collection.data[1].value - collection.data[0].value];
 	threshold = getMedian(collection.data) * query.threshold;
 	forecastRow = getForecastRow(
 		threshold,
@@ -74,9 +76,9 @@ function predict(collection, query) {
 	pushForecastData(collection, 0, forecastRow);
 	for (var i = 1; i < collection.data.length; i++) {
 		current = collection.data[i];
-		levels.push(getLevel(query.alpha, current.value, levels[i-1], trends[i-1]));
-		trends.push(getTrend(query.beta, levels[i], levels[i-1], trends[i-1]));
-		forecast = Math.max(levels[i-1] + trends[i-1], 0);
+		levels.push(getLevel(query.alpha, current.value, levels[i - 1], trends[i - 1]));
+		trends.push(getTrend(query.beta, levels[i], levels[i - 1], trends[i - 1]));
+		forecast = Math.max(levels[i - 1] + trends[i - 1], 0);
 		forecastRow = getForecastRow(threshold, current.value, forecast);
 		pushForecastData(collection, i, forecastRow);
 		if (forecastRow.exceeded) {

@@ -7,12 +7,12 @@ var q = require('q'),
 		credentials.accountEmail,
 		credentials.accountKey,
 		null,
-		[ 'https://www.googleapis.com/auth/analytics.readonly' ]
+		['https://www.googleapis.com/auth/analytics.readonly']
 	);
 
-function authenticate () {
+function authenticate() {
 	var deferred = q.defer();
-	authClient.authorize(function(err) {
+	authClient.authorize(function (err) {
 		if (err) {
 			logger.error('authenticate');
 			deferred.reject(err);

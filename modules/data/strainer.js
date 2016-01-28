@@ -6,7 +6,7 @@ function filter(rows) {
 		valuePosition = rows[0].length - 1,
 		valuesToSkip = 1;
 
-	for (i = rows.length-1; i >= 0; i--, valuesToSkip++) {
+	for (i = rows.length - 1; i >= 0; i--, valuesToSkip++) {
 		if (rows[i][valuePosition] !== '0') {
 			break;
 		}
