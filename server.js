@@ -15,12 +15,6 @@ app = express();
 app.use(cors());
 app.use(routes);
 
-app.get('/', function (req, res) {
-	res.sendFile(__dirname + '/front/index.html');
-});
-
-app.use('/public', express.static('./front/public'));
-
 app.listen(config.server.port, function () {
 	logger.info('Example app listening at http://localhost:' + config.server.port);
 });
