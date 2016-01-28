@@ -11,17 +11,17 @@ router.get('/:id?', function (req, res) {
 	builds
 		.get(req.params.id)
 		.then(function (build) {
-			var response;
 			if (!build) {
 				res.status(404);
 			}
-			response = JSON.parse(build.data);
-			response.id = build.id;
-			response.date = build.date;
-			response.duration = build.duration;
-			response.status = build.status;
 
-			res.json(response);
+			res.json({
+				id: build.id,
+				date: build.date,
+				duration: build.duration,
+				status: build.status,
+				queries: JSON.parse(build.data)
+			});
 		}, function (err) {
 			res.status(404);
 		});
