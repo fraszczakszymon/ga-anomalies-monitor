@@ -34,16 +34,21 @@ Steps to create your credentials:
 1. Go to [Google Developers Console](https://console.developers.google.com),
 2. [Create a new project](https://support.google.com/cloud/answer/6251787?hl=en&ref_topic=6158848),
 3. [Enable **Analytics API**](https://support.google.com/cloud/answer/6326510?hl=en&ref_topic=6262490),
-4. [Configure your OAuth2 consent screen](https://support.google.com/cloud/answer/6158849?hl=en&ref_topic=6262490),
-5. [Set up new credentials](https://support.google.com/cloud/answer/6158862?hl=en&ref_topic=6262490) - Service account key using P12 key type,
-6. Save newly created credentials ID in **accountEmail** field of _config/credentials.json_ file. Example below:
+4. Go to [management of service accounts](https://console.developers.google.com/permissions/serviceaccounts) and create a new service account with a private key (type: p12),
+5. Save automatically downloaded .p12 file in _config/key.p12_,
+6. Create _config/key.pem_ file using command:
+
+        cat config/key.p12 | openssl pkcs12 -nodes -nocerts -passin pass:notasecret | openssl rsa > config/key.pem
+
+7. Set up new credentials - OAuth client ID using **Other** application type
+8. Save newly created email address in **accountEmail** field of _config/credentials.json_ file. Example below:
 
         {
-          "accountEmail": "1234567890-abcdef@developer.gserviceaccount.com",
+          "accountEmail": "gaamtest-88@gaam2-1205.iam.gserviceaccount.com",
           "accountKey": "config/key.pem"
         }
 
-7. 
+9. [Grant permissions to the same e-mail address on Google Analytics](https://support.google.com/analytics/answer/1009702?hl=en). It may have read-only privileges.
 
 #### Run server:
 ```
