@@ -15,9 +15,15 @@ var analytics = require('api/analytics'),
 	q = require('q');
 
 function fetch(queries, extra) {
-	var promises = [];
+	var breakBetweenQueries = 2000,
+		currentTimeout = breakBetweenQueries,
+		promises = [];
+
+	extra = extra || {};
 	queries.forEach(function (query) {
+		extra.timeout = currentTimeout;
 		promises.push(analytics.runQuery(query.viewIds, query.metrics, query.dimensions, query.filters, extra));
+		currentTimeout += breakBetweenQueries;
 	});
 
 	return q.all(promises);

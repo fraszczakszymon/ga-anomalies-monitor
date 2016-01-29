@@ -14,7 +14,19 @@ var database = require('storage/database'),
 	provider = require('data/provider'),
 	router = express.Router();
 
-router.get('/:id?', function (req, res) {
+router.get('/', function (req, res) {
+	var builds = database.getBuildsRepository();
+
+	builds
+		.getAll()
+		.then(function (rows) {
+			res.json(rows);
+		}, function (err) {
+			res.status(404);
+		});
+});
+
+router.get('/:id', function (req, res) {
 	var builds = database.getBuildsRepository();
 
 	builds

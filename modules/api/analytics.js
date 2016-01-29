@@ -57,41 +57,44 @@ function runQuery(viewIds, metrics, dimensions, filters, extra) {
 	dimensions.push('date');
 	dimensions.push('hour');
 	extra = extra || {};
-	api.authenticate()
-		.then(function (authClient) {
-			var params = {
-				'auth': authClient,
-				'ids': 'ga:' + viewIds,
-				'metrics': prepareQueryParam(metrics),
-				'dimensions': prepareQueryParam(dimensions),
-				'startIndex': extra.startIndex || 1,
-				'max-results': extra.maxResults || 10000,
-				'start-date': extra.start || config.settings.timeSpan + 'daysAgo',
-				'end-date': extra.end || 'today'
-			};
-			if (filters) {
-				params.filters = filters;
-			}
-			analytics.data.ga.get(params, function (err, result) {
-				if (err) {
-					logger.error('runQuery', {
-						metrics: metrics,
-						dimensions: dimensions,
-						filters: filters,
-						error: err
-					});
-					deferred.reject(err);
-				} else {
-					logger.info('runQuery', {
-						metrics: metrics,
-						dimensions: dimensions,
-						filters: filters,
-						results: result.rows ? result.rows.length : 0
-					});
-					deferred.resolve(result);
+
+	setTimeout(function () {
+		api.authenticate()
+			.then(function (authClient) {
+				var params = {
+					'auth': authClient,
+					'ids': 'ga:' + viewIds,
+					'metrics': prepareQueryParam(metrics),
+					'dimensions': prepareQueryParam(dimensions),
+					'startIndex': extra.startIndex || 1,
+					'max-results': extra.maxResults || 10000,
+					'start-date': extra.start || config.settings.timeSpan + 'daysAgo',
+					'end-date': extra.end || 'today'
+				};
+				if (filters) {
+					params.filters = filters;
 				}
+				analytics.data.ga.get(params, function (err, result) {
+					if (err) {
+						logger.error('runQuery', {
+							metrics: metrics,
+							dimensions: dimensions,
+							filters: filters,
+							error: err
+						});
+						deferred.reject(err);
+					} else {
+						logger.info('runQuery', {
+							metrics: metrics,
+							dimensions: dimensions,
+							filters: filters,
+							results: result.rows ? result.rows.length : 0
+						});
+						deferred.resolve(result);
+					}
+				});
 			});
-		});
+	}, extra.timeout || 0);
 
 	return deferred.promise;
 }
