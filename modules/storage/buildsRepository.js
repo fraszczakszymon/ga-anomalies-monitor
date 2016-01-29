@@ -18,29 +18,11 @@ function getInstance(db) {
 		error: 2
 	};
 
-	function get(id) {
-		var deferred = q.defer(),
-			onFetch = function (err, rows) {
-				if (err) {
-					deferred.reject(err);
-				} else {
-					deferred.resolve(rows[0]);
-				}
-			};
-		if (id) {
-			db.all("SELECT * FROM builds WHERE id = ?", parseInt(id, 10), onFetch);
-		} else {
-			db.all("SELECT * FROM builds WHERE status = ? ORDER BY id DESC LIMIT 1", STATUS.done, onFetch);
-		}
-
-		return deferred.promise;
-	}
-
 	function create() {
 		var deferred = q.defer();
 		db.run("INSERT INTO builds (date, data, duration, status) VALUES (?, ?, ?, ?);",
 			moment().format(),
-			'',
+			null,
 			0,
 			STATUS.pending,
 			function (err) {
@@ -57,6 +39,36 @@ function getInstance(db) {
 		return deferred.promise;
 	}
 
+	function get(id) {
+		var deferred = q.defer(),
+			onFetch = function (err, rows) {
+				if (err) {
+					deferred.reject(err);
+				} else {
+					deferred.resolve(rows[0]);
+				}
+			};
+
+		db.all("SELECT * FROM builds WHERE id = ?", parseInt(id, 10), onFetch);
+
+		return deferred.promise;
+	}
+
+	function getAll() {
+		var deferred = q.defer(),
+			onFetch = function (err, rows) {
+				if (err) {
+					deferred.reject(err);
+				} else {
+					deferred.resolve(rows);
+				}
+			};
+
+		db.all("SELECT id, date, duration, status FROM builds ORDER BY id DESC LIMIT 1000", onFetch);
+
+		return deferred.promise;
+	}
+
 	function update(id, data, duration, status) {
 		db.run("UPDATE builds SET data = ?, duration = ?, status = ? WHERE id = ?;",
 			JSON.stringify(data),
@@ -69,6 +81,7 @@ function getInstance(db) {
 	return {
 		create: create,
 		get: get,
+		getAll: getAll,
 		update: update,
 		STATUS: STATUS
 	};
