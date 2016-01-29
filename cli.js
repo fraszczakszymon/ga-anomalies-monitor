@@ -44,7 +44,14 @@ program
 	.description('Calculate best parameters for healthy query data')
 	.arguments('<queryId>')
 	.action(function (queryId) {
-		var query = config.queries[queryId];
+		var query;
+
+		config.queries.forEach(function (configQuery) {
+			if (configQuery.id === queryId) {
+				query = configQuery;
+			}
+		});
+
 		if (!query) {
 			console.log('Given query does not exist.');
 			return;
