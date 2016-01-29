@@ -4,6 +4,7 @@
 
 Application allows detection of anomalies in Google Analytics data based on custom events. Forecast data is calculated using [Holt's linear trend method](https://www.otexts.org/fpp/7/2) ([exponential smoothing](https://en.wikipedia.org/wiki/Exponential_smoothing)). Here is code base which provides API to calculate and manage data. Check out [client application](https://github.com/fraszczakszymon/ga-anomalies-monitor-client) which is UI for **Google Analytics anomalies monitor**.
 
+![Sample graph](http://i.imgur.com/GguUELE.png)
 
 ## Build
 
