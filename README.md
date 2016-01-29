@@ -40,15 +40,23 @@ Steps to create your credentials:
 
         cat config/key.p12 | openssl pkcs12 -nodes -nocerts -passin pass:notasecret | openssl rsa > config/key.pem
 
-7. Set up new credentials - OAuth client ID using **Other** application type
-8. Save newly created email address in **accountEmail** field of _config/credentials.json_ file. Example below:
+7. Save newly created email address in **accountEmail** field of _config/credentials.json_ file. Example below:
 
         {
           "accountEmail": "gaamtest-88@gaam2-1205.iam.gserviceaccount.com",
           "accountKey": "config/key.pem"
         }
 
-9. [Grant permissions to the same e-mail address on Google Analytics](https://support.google.com/analytics/answer/1009702?hl=en). It may have read-only privileges.
+8. [Grant permissions to the same e-mail address on Google Analytics](https://support.google.com/analytics/answer/1009702?hl=en). It may have read-only privileges.
+ 
+#### Verify credentials:
+
+Run command:
+```bash
+node cli.js profiles
+```
+
+And check whether all available GA profiles are listed.
 
 #### Run server:
 ```
