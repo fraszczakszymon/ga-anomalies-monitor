@@ -1,0 +1,9 @@
+language: node_js
+node_js:
+  - 0.10
+install:
+  - cd $TRAVIS_BUILD_DIR/
+  - npm install
+script:
+  - cd $TRAVIS_BUILD_DIR/
+  - npm run check
