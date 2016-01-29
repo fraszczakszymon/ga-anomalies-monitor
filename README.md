@@ -16,7 +16,21 @@ cd ga-anomalies-monitor
 npm install
 ```
 
-Run using forever:
+#### Create configuration files:
+
+##### Server configuration:
+Copy file with basic config:
+```bash
+cp config/config.sample.json config/config.json
+```
+Port provided in this file will be used to run API server.
+
+##### Google Analytics credentials:
+```bash
+cp config/credentials.sample.json config/credentials.json
+```
+
+#### Run server:
 ```
 npm start
 ```
