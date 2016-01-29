@@ -37,8 +37,12 @@ Steps to create your credentials:
 4. [Configure your OAuth2 consent screen](https://support.google.com/cloud/answer/6158849?hl=en&ref_topic=6262490),
 5. [Set up new credentials](https://support.google.com/cloud/answer/6158862?hl=en&ref_topic=6262490) - Service account key using P12 key type,
 6. Save newly created credentials ID in **accountEmail** field of _config/credentials.json_ file. Example below:
-        asd
-        zcx
+
+        {
+          "accountEmail": "1234567890-abcdef@developer.gserviceaccount.com",
+          "accountKey": "config/key.pem"
+        }
+
 7. 
 
 #### Run server:
@@ -59,8 +63,6 @@ TBA
 TBA
 
 ## License
-
-TBA
 
 #### The MIT License
 
