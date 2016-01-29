@@ -114,11 +114,7 @@ Build queries with the syntax described in [documentation](https://developers.go
 
         node cli.js parameters <queryId>
 
-## API
-
-TBA
-
-## Contribution
+## API description
 
 TBA
 
