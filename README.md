@@ -23,7 +23,7 @@ Copy file with basic config:
 ```bash
 cp config/config.sample.json config/config.json
 ```
-Port provided in this file will be used to run API server.
+Port provided in this file will be used to run API server - make sure it's not in use.
 
 ##### Google Analytics credentials:
 ```bash
@@ -40,7 +40,7 @@ Steps to create your credentials:
 
         cat config/key.p12 | openssl pkcs12 -nodes -nocerts -passin pass:notasecret | openssl rsa > config/key.pem
 
-7. Save newly created email address in **accountEmail** field of _config/credentials.json_ file. Example below:
+7. Save newly created e-mail address in **accountEmail** field of _config/credentials.json_ file. Example below:
 
         {
           "accountEmail": "gaamtest-88@gaam2-1205.iam.gserviceaccount.com",
