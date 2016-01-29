@@ -6,8 +6,8 @@ Application allows detection of anomalies in Google Analytics data based on cust
 ## Build
 
 Dependencies:
-* nodejs
-* npm
+* nodejs,
+* npm.
 
 Clone code and install app dependencies:
 ```bash
@@ -29,6 +29,17 @@ Port provided in this file will be used to run API server.
 ```bash
 cp config/credentials.sample.json config/credentials.json
 ```
+Steps to create your credentials:
+
+1. Go to [Google Developers Console](https://console.developers.google.com),
+2. [Create a new project](https://support.google.com/cloud/answer/6251787?hl=en&ref_topic=6158848),
+3. [Enable **Analytics API**](https://support.google.com/cloud/answer/6326510?hl=en&ref_topic=6262490),
+4. [Configure your OAuth2 consent screen](https://support.google.com/cloud/answer/6158849?hl=en&ref_topic=6262490),
+5. [Set up new credentials](https://support.google.com/cloud/answer/6158862?hl=en&ref_topic=6262490) - Service account key using P12 key type,
+6. Save newly created credentials ID in **accountEmail** field of _config/credentials.json_ file. Example below:
+        asd
+        zcx
+7. 
 
 #### Run server:
 ```
