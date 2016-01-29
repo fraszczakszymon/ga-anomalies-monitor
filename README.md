@@ -63,9 +63,56 @@ And check whether all available GA profiles are listed.
 npm start
 ```
 
-## Configuration
+## Queries configuration
 
-TBA
+Build queries with the syntax described in [documentation](https://developers.google.com/analytics/devguides/reporting/core/v3/reference). Each json with query configuration should be placed in _config/config.json_ in **queries** array. To verify query you can use [GA Query Explorer](https://ga-dev-tools.appspot.com/query-explorer/). Time dimensions (day, hour) are added automatically so correct configuration should look like:
+
+```json
+{
+        "id": "pageview",
+        "title": "Pageviews",
+        "description": "Number of pageviews",
+        "viewIds": "12345678",
+        "metrics": [
+                "pageviews"
+        ],
+        "dimensions": [],
+        "filters": "",
+        "alpha": 0.9,
+        "beta": 0.6,
+        "threshold": 0.15,
+        "enabled": true
+},
+{
+        "id": "my-custom-event",
+        "title": "My custom event",
+        "description": "Events with category here/is/category and action here.is.action.name",
+        "viewIds": "12345678",
+        "metrics": [
+                "totalEvents"
+        ],
+        "dimensions": [
+                "eventCategory"
+        ],
+        "filters": "ga:eventCategory=@here/is/catego;ga:eventAction==here.is.action.name",
+        "alpha": 0.9,
+        "beta": 0.8,
+        "threshold": 0.2,
+        "enabled": true
+}
+```
+
+### Description of parameters:
+
+* **id** - unique query id,
+* **title**, **description** - title and description to be displayed in UI panel,
+* **viewIds** - GA profile id,
+* **metrics**, **dimensions**, **filters** - GA filter parameters,
+* **threshold** - decide when error should be marked as an anomaly,
+* **enabled** - decide whether include query in request to API or skip it,
+* **alpha**, **beta** - used to calculate forecast data. Value has to be in range from 0.01 to 1.0. You can choose these values experimentally or using command:
+
+        node cli.js parameters <queryId>
 
 ## API
 
