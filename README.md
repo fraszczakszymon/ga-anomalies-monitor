@@ -16,16 +16,16 @@ cd ga-anomalies-monitor
 npm install
 ```
 
-#### Create configuration files:
+### Create configuration files:
 
-##### Server configuration:
+#### Server configuration:
 Copy file with basic config:
 ```bash
 cp config/config.sample.json config/config.json
 ```
 Port provided in this file will be used to run API server - make sure it's not in use.
 
-##### Google Analytics credentials:
+#### Google Analytics credentials:
 ```bash
 cp config/credentials.sample.json config/credentials.json
 ```
@@ -49,7 +49,7 @@ Steps to create your credentials:
 
 8. [Grant permissions to the same e-mail address on Google Analytics](https://support.google.com/analytics/answer/1009702?hl=en). It may have read-only privileges.
  
-#### Verify credentials:
+### Verify credentials:
 
 Run command:
 ```bash
@@ -58,7 +58,7 @@ node cli.js profiles
 
 And check whether all available GA profiles are listed.
 
-#### Run server:
+### Run server:
 ```
 npm start
 ```
@@ -77,7 +77,7 @@ TBA
 
 ## License
 
-#### The MIT License
+### The MIT License
 
 Copyright (c) 2016 Frąszczak Szymon ([@fraszczakszymon](https://github.com/fraszczakszymon))
 
