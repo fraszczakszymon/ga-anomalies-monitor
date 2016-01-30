@@ -67,6 +67,7 @@ function runQuery(viewIds, metrics, dimensions, filters, extra) {
 					'ids': 'ga:' + viewIds,
 					'metrics': prepareQueryParam(metrics),
 					'dimensions': prepareQueryParam(dimensions),
+					'samplingLevel': 'HIGHER_PRECISION',
 					'startIndex': extra.startIndex || 1,
 					'max-results': extra.maxResults || 10000,
 					'start-date': extra.start || config.settings.timeSpan + 'daysAgo',
