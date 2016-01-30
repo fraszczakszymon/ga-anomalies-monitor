@@ -8,7 +8,7 @@
  */
 
 /*global module, require*/
-var config = require('../../config/config.json'),
+var config,
 	moment = require('moment-timezone'),
 	profiles = require('api/profiles'),
 	seer = require('data/seer'),
@@ -81,6 +81,7 @@ function parse(originalData, queryDetails) {
 		rows,
 		timezone = profile.timezone || 'Europe/London';
 
+	config = require('../../config/config.json');
 	if (originalData.rows) {
 		filteredData = strainer.filter(originalData.rows);
 		date = parseDate(filteredData[filteredData.length - 1], metricsCount, timezone);
