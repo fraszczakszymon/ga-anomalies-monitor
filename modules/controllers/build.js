@@ -22,7 +22,7 @@ router.get('/', function (req, res) {
 		.then(function (rows) {
 			res.json(rows);
 		}, function (err) {
-			res.status(404);
+			res.status(404).json({});
 		});
 });
 
@@ -33,7 +33,7 @@ router.get('/:id', function (req, res) {
 		.get(req.params.id)
 		.then(function (build) {
 			if (!build) {
-				res.status(404);
+				res.status(404).json({});
 			}
 
 			res.json({
@@ -41,10 +41,10 @@ router.get('/:id', function (req, res) {
 				date: build.date,
 				duration: build.duration,
 				status: build.status,
-				queries: JSON.parse(build.data)
+				queries: JSON.parse(build.data || null)
 			});
 		}, function (err) {
-			res.status(404);
+			res.status(404).json({});
 		});
 });
 
