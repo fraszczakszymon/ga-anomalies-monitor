@@ -13,7 +13,7 @@
     "lint": "node ./node_modules/jshint/bin/jshint --reporter=node_modules/jshint-stylish modules/**/*.js",
     "check": "npm run test && npm run lint",
     "dev": "node ./node_modules/nodemon/bin/nodemon.js server.js",
-    "restart": "npm start && npm stop",
+    "restart": "npm stop && npm start",
     "start": "node ./node_modules/forever/bin/forever start server.js",
     "status": "node ./node_modules/forever/bin/forever list",
     "stop": "node ./node_modules/forever/bin/forever stop server.js"
