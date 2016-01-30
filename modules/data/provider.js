@@ -9,7 +9,7 @@
 
 /*global module, require*/
 var analytics = require('api/analytics'),
-	config = require('../../config/config.json'),
+	config,
 	parser = require('data/parser'),
 	profiles = require('api/profiles'),
 	q = require('q');
@@ -30,6 +30,7 @@ function fetch(queries, extra) {
 }
 
 function get() {
+	config = require('../../config/config.json');
 	return profiles.fetch()
 		.then(function () {
 			return fetch(config.queries);
