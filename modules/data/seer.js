@@ -36,14 +36,15 @@ function getTrend(beta, level, previousLevel, previousTrend) {
 	return beta * (level - previousLevel) + (1 - beta) * previousTrend;
 }
 
-function getForecastRow(threshold, value, forecast) {
+function getForecastRow(threshold, value, forecast, change) {
 	var max = forecast + threshold,
 		min = Math.max(forecast - threshold, 0),
 		row = {
 			error: forecast - value,
 			value: Math.round(forecast),
 			max: max,
-			min: min
+			min: min,
+			change: change
 		};
 
 	if (value > max || value < min) {
@@ -58,6 +59,7 @@ function pushForecastData(collection, index, forecast) {
 	collection.data[index].forecast = forecast.value;
 	collection.data[index].max = forecast.max || 0;
 	collection.data[index].min = forecast.min || 0;
+	collection.data[index].change = forecast.change || 0;
 
 	if (forecast.exceeded) {
 		collection.data[index].exceeded = true;
@@ -65,7 +67,8 @@ function pushForecastData(collection, index, forecast) {
 }
 
 function predict(collection, query) {
-	var current,
+	var change = 0,
+		current,
 		errors = 0,
 		forecast,
 		forecastRow,
@@ -79,7 +82,8 @@ function predict(collection, query) {
 	forecastRow = getForecastRow(
 		threshold,
 		collection.data[0].value,
-		collection.data[0].value
+		collection.data[0].value,
+		change
 	);
 	pushForecastData(collection, 0, forecastRow);
 	for (var i = 1; i < collection.data.length; i++) {
@@ -87,7 +91,8 @@ function predict(collection, query) {
 		levels.push(getLevel(query.alpha, current.value, levels[i - 1], trends[i - 1]));
 		trends.push(getTrend(query.beta, levels[i], levels[i - 1], trends[i - 1]));
 		forecast = Math.max(levels[i - 1] + trends[i - 1], 0);
-		forecastRow = getForecastRow(threshold, current.value, forecast);
+		change = 100 * (current.value - collection.data[i - 1].value) / current.value;
+		forecastRow = getForecastRow(threshold, current.value, forecast, change);
 		pushForecastData(collection, i, forecastRow);
 		if (forecastRow.exceeded) {
 			errors++;
