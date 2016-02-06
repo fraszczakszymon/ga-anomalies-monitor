@@ -16,7 +16,7 @@ Clone code and install app dependencies:
 ```bash
 git clone https://github.com/fraszczakszymon/ga-anomalies-monitor.git
 cd ga-anomalies-monitor
-npm install
+npm install --production
 ```
 
 ### Create configuration files:
@@ -72,54 +72,191 @@ Build queries with the syntax described in [documentation](https://developers.go
 
 ```json
 {
-        "id": "pageview",
-        "title": "Pageviews",
-        "description": "Number of pageviews",
-        "viewIds": "12345678",
-        "metrics": [
-                "pageviews"
-        ],
-        "dimensions": [],
-        "filters": "",
-        "alpha": 0.9,
-        "beta": 0.6,
-        "threshold": 0.15,
-        "enabled": true
+    "id": "pageview",
+    "title": "Pageviews",
+    "description": "Number of pageviews",
+    "viewIds": "12345678",
+    "metrics": [
+        "pageviews"
+    ],
+    "dimensions": [],
+    "filters": "",
+    "alpha": 0.9,
+    "beta": 0.6,
+    "threshold": 0.15,
+    "enabled": true
 },
 {
-        "id": "my-custom-event",
-        "title": "My custom event",
-        "description": "Events with category here/is/category and action here.is.action.name",
-        "viewIds": "12345678",
-        "metrics": [
-                "totalEvents"
-        ],
-        "dimensions": [
-                "eventCategory"
-        ],
-        "filters": "ga:eventCategory=@here/is/catego;ga:eventAction==here.is.action.name",
-        "alpha": 0.9,
-        "beta": 0.8,
-        "threshold": 0.2,
-        "enabled": true
+    "id": "my-custom-event",
+    "title": "My custom event",
+    "description": "Events with category here/is/category and action here.is.action.name",
+    "viewIds": "12345678",
+    "metrics": [
+        "totalEvents"
+    ],
+    "dimensions": [
+    	"eventCategory"
+    ],
+    "filters": "ga:eventCategory=@here/is/catego;ga:eventAction==here.is.action.name",
+    "alpha": 0.9,
+    "beta": 0.8,
+    "threshold": 0.2,
+    "enabled": true
 }
 ```
 
 ### Description of parameters:
 
-* **id** - unique query id,
-* **title**, **description** - title and description to be displayed in UI panel,
-* **viewIds** - GA profile id,
-* **metrics**, **dimensions**, **filters** - GA filter parameters,
-* **threshold** - decide when error should be marked as an anomaly,
-* **enabled** - decide whether include query in request to API or skip it,
-* **alpha**, **beta** - used to calculate forecast data. Value has to be in range from 0.01 to 1.0. You can choose these values experimentally or using command:
-
-        node cli.js parameters <queryId>
+| Parameter                                | Type    | Description |
+|------------------------------------------|---------|-------------|
+| **id**                                   | string  | Unique query id |
+| **title**                                | string  | Title to be displayed in UI panel |
+| **description**                          | string  | Description to be displayed in UI panel |
+| **viewIds**                              | integer | GA profile id |
+| **metrics**, **dimensions**, **filters** | string  | GA filter parameters |
+| **threshold**                            | float   | Decide when error should be marked as an anomaly |
+| **alpha**, **beta**                      | float   | Used to calculate forecast data. Value has to be in range from 0.01 to 1.0. You can choose these values experimentally or using command: `node cli.js parameters <queryId>` |
+| **enabled**                              | boolean | Decide whether include query in request to API or skip it |
 
 ## API description
 
-TBA
+### History of builds
+##### GET `/build`
+
+Returns json with created builds (max 48).
+
+```json
+[
+	{
+		"id": 29,
+		"date": "2016-02-05T08:35:12+01:00",
+		"duration": 14984,
+		"status": 0
+	},
+	{
+		"id": 28,
+		"date": "2016-02-05T08:34:22+01:00",
+		"duration": 14901,
+		"status": 0
+	},
+	{
+		"id": 27,
+		"date": "2016-02-05T08:30:22+01:00",
+		"duration": 16406,
+		"status": 0
+	}
+]
+```
+
+| Field        | Type    | Description |
+|--------------|---------|-------------|
+| **id**       | integer | Build id |
+| **date**     | string  | Date when build was created |
+| **duration** | integer | Build duration in milliseconds |
+| **status**   | integer | Current status of build: 0 - done, 1 - pending, 2 - failed |
+
+### Build details
+##### GET `/build/{id}`
+
+Returns json with build details and calculated data.
+
+```json
+{
+	"id": 29,
+	"date": "2016-02-05T08:35:12+01:00",
+	"duration": 14984,
+	"status": 0,
+	"queries": [
+		{
+			"id": "pageview",
+			"title": "Pageviews",
+			"description": "Number of pageviews",
+			"data": [
+				{
+					"date": "2016-02-01T00:00:00-08:00",
+					"value": 345248,
+					"error": 0,
+					"forecast": 345248,
+					"max": 397035.2,
+					"min": 293460.8,
+					"change": 0,
+					"exceeded": false
+				},
+				{
+					"date": "2016-02-01T01:00:00-08:00",
+					"value": 306954,
+					"error": 0,
+					"forecast": 306954,
+					"max": 352997.1,
+					"min": 260910.9,
+					"change": -11.091736954305311,
+					"exceeded": false
+				}
+			],
+			"errors": 0
+		}
+	]
+}
+```
+
+| Field        | Type    | Description |
+|--------------|---------|-------------|
+| **id**       | integer | Build id |
+| **date**     | string  | Date when build was created |
+| **duration** | integer | Build duration in milliseconds |
+| **status**   | integer | Current status of build: 0 - done, 1 - pending, 2 - failed |
+| **queries**  | array   | Array with defined queries data |
+
+Each query object contains:
+
+| Field           | Type    | Description |
+|-----------------|---------|-------------|
+| **id**          | string  | Query id (defined in config) |
+| **title**       | string  | Query title (defined in config) |
+| **description** | string  | Query description (defined in config) |
+| **data**        | array   | Calculated data details |
+| **errors**      | integer | Number of detected anomalies |
+
+Each row in data contains:
+
+| Field           | Type    | Description |
+|-----------------|---------|-------------|
+| **date**        | string  | Date with time |
+| **value**       | integer | Number of event occurrences at given time |
+| **forecast**    | integer | Expected number of event occurrences at given time |
+| **error**       | float   | Difference between expected and real value of events |
+| **max**         | float   | Maximum value of difference range (based on configured threshold) |
+| **min**         | float   | Minimum value of difference range (based on configured threshold) |
+| **change**      | float   | Percentage of change based on previous row |
+| **exceeded**    | boolean | True if value exceeded defined threshold |
+
+### Create build
+##### POST `/build`
+
+Starts new build.
+
+```json
+{
+	"id": 29,
+	"date": "2016-02-05T08:35:12+01:00",
+	"duration": 0,
+	"status": 1
+}
+```
+
+| Field        | Type    | Description |
+|--------------|---------|-------------|
+| **id**       | integer | Build id |
+| **date**     | string  | Date when build was created |
+| **duration** | integer | Build duration in milliseconds |
+| **status**   | integer | Current status of build: 0 - done, 1 - pending, 2 - failed |
+
+## Contribution
+
+1. Check out [build instructions](#build),
+2. Install dev dependencies using `npm install`,
+3. Check out .editorconfig file to keep coding with the same styles guidelines,
+4. Before commiting run `npm run check` to check tests results and all files styles with linter.
 
 ## License
 
