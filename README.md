@@ -16,7 +16,7 @@ Clone code and install app dependencies:
 ```bash
 git clone https://github.com/fraszczakszymon/ga-anomalies-monitor.git
 cd ga-anomalies-monitor
-npm install
+npm install --production
 ```
 
 ### Create configuration files:
@@ -250,6 +250,13 @@ Starts new build.
 | **date**     | string  | Date when build was created |
 | **duration** | integer | Build duration in milliseconds |
 | **status**   | integer | Current status of build: 0 - done, 1 - pending, 2 - failed |
+
+## Contribution
+
+1. Check out [build instructions](#build),
+2. Install dev dependencies using `npm install`,
+3. Check out .editorconfig file to keep coding with the same styles guidelines,
+4. Before commiting run `npm run check` to check tests results and all files styles with linter.
 
 ## License
 
