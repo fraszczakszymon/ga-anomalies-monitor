@@ -77,7 +77,7 @@ Build queries with the syntax described in [documentation](https://developers.go
         "description": "Number of pageviews",
         "viewIds": "12345678",
         "metrics": [
-                "pageviews"
+            "pageviews"
         ],
         "dimensions": [],
         "filters": "",
@@ -92,10 +92,10 @@ Build queries with the syntax described in [documentation](https://developers.go
         "description": "Events with category here/is/category and action here.is.action.name",
         "viewIds": "12345678",
         "metrics": [
-                "totalEvents"
+            "totalEvents"
         ],
         "dimensions": [
-                "eventCategory"
+        	"eventCategory"
         ],
         "filters": "ga:eventCategory=@here/is/catego;ga:eventAction==here.is.action.name",
         "alpha": 0.9,
@@ -107,15 +107,16 @@ Build queries with the syntax described in [documentation](https://developers.go
 
 ### Description of parameters:
 
-* **id** - unique query id,
-* **title**, **description** - title and description to be displayed in UI panel,
-* **viewIds** - GA profile id,
-* **metrics**, **dimensions**, **filters** - GA filter parameters,
-* **threshold** - decide when error should be marked as an anomaly,
-* **enabled** - decide whether include query in request to API or skip it,
-* **alpha**, **beta** - used to calculate forecast data. Value has to be in range from 0.01 to 1.0. You can choose these values experimentally or using command:
-
-        node cli.js parameters <queryId>
+| Parameter                                | Type    | Description |
+|------------------------------------------|---------|-------------|
+| **id**                                   | string  | Unique query id |
+| **title**                                | string  | Title to be displayed in UI panel |
+| **description**                          | string  | Description to be displayed in UI panel |
+| **viewIds**                              | integer | GA profile id |
+| **metrics**, **dimensions**, **filters** | string  | GA filter parameters |
+| **threshold**                            | float   | Decide when error should be marked as an anomaly |
+| **alpha**, **beta**                      | float   | Used to calculate forecast data. Value has to be in range from 0.01 to 1.0. You can choose these values experimentally or using command: `node cli.js parameters <queryId>` |
+| **enabled**                              | boolean | Decide whether include query in request to API or skip it |
 
 ## API description
 
