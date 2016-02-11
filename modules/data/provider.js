@@ -42,8 +42,8 @@ function get() {
 			data.forEach(function (queryData) {
 				if (config.queries[queryId].enabled) {
 					queriesData.push(parser.parse(queryData, config.queries[queryId]));
-					queryId++;
 				}
+				queryId++;
 			});
 
 			return {
